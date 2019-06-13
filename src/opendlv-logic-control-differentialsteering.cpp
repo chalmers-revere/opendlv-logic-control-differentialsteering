@@ -96,9 +96,9 @@ int32_t main(int32_t argc, char **argv)
         float pedalPositionRight;
         {
           pedalPositionLeft = vl / speedMax;
-          pedalPositionLeft = pedalPositionLeft > 1.0f ? 1.0f 
+          pedalPositionLeft = pedalPositionLeft > 1.0f ? 0.99f 
             : pedalPositionLeft;
-          pedalPositionLeft = pedalPositionLeft < -1.0f ? -1.0f 
+          pedalPositionLeft = pedalPositionLeft < -1.0f ? -0.99f 
             : pedalPositionLeft;
           opendlv::proxy::PedalPositionRequest pedalPositionRequestLeft;
           pedalPositionRequestLeft.position(pedalPositionLeft);
@@ -106,9 +106,9 @@ int32_t main(int32_t argc, char **argv)
         }
         {
           pedalPositionRight = vr / speedMax;
-          pedalPositionRight = pedalPositionRight > 1.0f ? 1.0f 
+          pedalPositionRight = pedalPositionRight > 1.0f ? 0.99f 
             : pedalPositionRight;
-          pedalPositionRight = pedalPositionRight < -1.0f ? -1.0f 
+          pedalPositionRight = pedalPositionRight < -1.0f ? -0.99f 
             : pedalPositionRight;
           opendlv::proxy::PedalPositionRequest pedalPositionRequestRight;
           pedalPositionRequestRight.position(pedalPositionRight);
