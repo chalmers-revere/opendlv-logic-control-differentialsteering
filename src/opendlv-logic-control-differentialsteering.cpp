@@ -106,7 +106,7 @@ int32_t main(int32_t argc, char **argv)
       {
         {
           std::lock_guard<std::mutex> lock(stateMutex);
-          if (state == 1) {
+          if (state != 1) {
             if (verbose) {
               std::cout << "Not in state '1', supressing output" << std::endl;
             }
