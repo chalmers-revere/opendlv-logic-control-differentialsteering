@@ -60,6 +60,9 @@ int32_t main(int32_t argc, char **argv)
     float vxRequest{0.0f};
     float yawRateRequest{0.0f};
 
+    std::mutex stateMutex;
+    int32_t state;
+
     auto onGroundMotionRequest{[&vxRequest, &yawRateRequest, &senderStampInput,
       &requestMutex, &verbose](cluon::data::Envelope &&envelope)
       {
@@ -81,9 +84,34 @@ int32_t main(int32_t argc, char **argv)
         }
       }};
     
-    auto atFrequency{[&od4, &trackWidth, &speedMax, &vxRequest, &yawRateRequest,
-      &senderStampLeft, &senderStampRight, &requestMutex, &verbose]() -> bool
+    auto onSwitchStateRequest{[&state, &stateMutex, &verbose](cluon::data::Envelope &&envelope)
       {
+        if (envelope.senderStamp() == 99) {
+
+          auto msg = cluon::extractMessage<opendlv::proxy::SwitchStateRequest>(
+              std::move(envelope));
+
+          std::lock_guard<std::mutex> lock(stateMutex);
+          state = msg.state();
+
+          if (verbose) {
+            std::cout << "Got switch state, state=" << state << std::endl;
+          }
+        }
+      }};
+    
+    auto atFrequency{[&od4, &trackWidth, &speedMax, &vxRequest, &yawRateRequest,
+      &senderStampLeft, &senderStampRight, &requestMutex, &state, &stateMutex,
+      &verbose]() -> bool
+      {
+        std::lock_guard<std::mutex> lock(stateMutex);
+        if (state == 1) {
+          if (verbose) {
+            std::cout << "Not in state '1', supressing output" << std::endl;
+          }
+          return true;
+        }
+
         float vl;
         float vr;
         {
