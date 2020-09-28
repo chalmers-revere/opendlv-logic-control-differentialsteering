@@ -104,12 +104,14 @@ int32_t main(int32_t argc, char **argv)
       &senderStampLeft, &senderStampRight, &requestMutex, &state, &stateMutex,
       &verbose]() -> bool
       {
-        std::lock_guard<std::mutex> lock(stateMutex);
-        if (state == 1) {
-          if (verbose) {
-            std::cout << "Not in state '1', supressing output" << std::endl;
+        {
+          std::lock_guard<std::mutex> lock(stateMutex);
+          if (state == 1) {
+            if (verbose) {
+              std::cout << "Not in state '1', supressing output" << std::endl;
+            }
+            return true;
           }
-          return true;
         }
 
         float vl;
