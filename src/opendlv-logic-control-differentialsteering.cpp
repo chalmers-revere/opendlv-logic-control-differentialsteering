@@ -156,6 +156,8 @@ int32_t main(int32_t argc, char **argv)
 
     od4.dataTrigger(opendlv::proxy::GroundMotionRequest::ID(),
         onGroundMotionRequest);
+    od4.dataTrigger(opendlv::proxy::SwitchStateRequest::ID(),
+        onSwitchStateRequest);
     od4.timeTrigger(std::stoi(commandlineArguments["freq"]), atFrequency);
 
     retCode = 0;
